@@ -1,0 +1,17 @@
+spring:
+  data:
+    mongodb:
+      database: stage2024
+      host: localhost
+      port: 27017
+  servlet:
+    multipart:
+      max-file-size: 256MB
+      max-request-size: 256MB
+      enabled: true
+
+application:
+  security:
+    jwtSecret: I12OI3N12IONOIEN12IONEIO12JOI312KLNEOKZAKLHEIHO21IN3KL1N2LKNDIOI12OI3N12IONOIEN12IONEIO12JOI312KL
+    jwtExpirationMs: 86400000
+    jwtRefreshExpirationMs: 8640000
