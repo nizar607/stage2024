@@ -30,8 +30,7 @@ public class SignupRequest {
     @Size(min = 6, max = 40)
     private String password;
 
-    @NotNull
-    @Min(0)
+
     private Integer firmSize;
 
     @NotNull

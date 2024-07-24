@@ -43,7 +43,7 @@ public class User {
     private boolean enabled;
 
 
-    private LocalDateTime createdAt = LocalDateTime.now();;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     private String phoneNumber;
 
@@ -55,6 +55,7 @@ public class User {
     @DBRef
     private Set<Access> accesses = new HashSet<>();
 
+    @Null
     private Integer firmSize;
 
 

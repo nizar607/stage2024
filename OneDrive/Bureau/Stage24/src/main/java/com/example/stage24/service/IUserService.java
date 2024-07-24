@@ -24,4 +24,6 @@ public interface IUserService {
 
     public List<User> getUsers();
 
+    public User getUserById(String id);
+
 }

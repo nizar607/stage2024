@@ -1,6 +1,7 @@
 package com.example.stage24.rest;
 
 
+import com.example.stage24.domain.contact.PeopleGroup;
 import com.example.stage24.domain.user.Role;
 import com.example.stage24.domain.user.User;
 import com.example.stage24.model.request.LoginRequest;
@@ -8,6 +9,8 @@ import com.example.stage24.model.request.SignupRequest;
 import com.example.stage24.model.request.TokenRefreshRequest;
 import com.example.stage24.model.response.MessageResponse;
 import com.example.stage24.service.IUserService;
+import com.example.stage24.service.contact.PeopleGroupServiceInterface;
+import com.example.stage24.service.contact.implementation.PeopleGroupServiceImp;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +20,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @Validated
-@CrossOrigin(origins = "*", maxAge = 3600)
-@RestController
 @RequestMapping("/api/auth")
 @AllArgsConstructor
+@RestController
 public class AuthResource {
+
 
     IUserService userService;
 
@@ -57,9 +61,12 @@ public class AuthResource {
         return userService.addRole(role);
     }
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_LAWYER')")
     @GetMapping("/get-users")
     public List<User> getUsers() {
         return userService.getUsers();
     }
+
+
+
 }

@@ -1,5 +1,7 @@
 package com.example.stage24.domain.meeting;
 
+import com.example.stage24.domain.legalcase.Case;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,5 +28,8 @@ public class Meeting {
 
     @NotBlank
     private String purpose;
+
+    @Valid
+    private Case _case;
 
 }

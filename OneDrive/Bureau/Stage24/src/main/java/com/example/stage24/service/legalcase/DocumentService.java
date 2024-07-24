@@ -5,14 +5,20 @@ import com.example.stage24.domain.legalcase.Document;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.mongodb.core.query.Query;
 import org.apache.commons.io.IOUtils;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.io.IOException;
 
 
@@ -28,30 +34,32 @@ public class DocumentService {
 
         DBObject metadata = new BasicDBObject();
         metadata.put("fileSize", upload.getSize());
+        metadata.put("contentType", upload.getContentType());
 
-        Object fileID = template.store(upload.getInputStream(), upload.getOriginalFilename(), upload.getContentType(), metadata);
+        ObjectId fileID = template.store(upload.getInputStream(), upload.getOriginalFilename(), upload.getContentType(), metadata);
 
         return fileID.toString();
     }
 
 
-    public Document downloadFile(String id) throws IOException {
+    public InputStreamResource downloadFile(String id) throws IOException {
+        GridFSFile gridFsFile = template.findOne(new org.springframework.data.mongodb.core.query.Query().addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("_id").is(id)));
 
-        GridFSFile gridFSFile = template.findOne( new Query(Criteria.where("_id").is(id)) );
-
-        Document loadFile = new Document();
-
-        if (gridFSFile != null && gridFSFile.getMetadata() != null) {
-            loadFile.setFilename( gridFSFile.getFilename() );
-
-            loadFile.setFileType( gridFSFile.getMetadata().get("_contentType").toString() );
-
-            loadFile.setFileSize( gridFSFile.getMetadata().get("fileSize").toString() );
-
-            loadFile.setFile( IOUtils.toByteArray(operations.getResource(gridFSFile).getInputStream()) );
+        if (gridFsFile == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "File not found");
         }
 
-        return loadFile;
+        return new InputStreamResource(template.getResource(gridFsFile).getInputStream());
+    }
+
+    public GridFSFile getFileMetadata(String id) {
+        GridFSFile gridFsFile = template.findOne(new org.springframework.data.mongodb.core.query.Query().addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("_id").is(id)));
+
+        if (gridFsFile == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "File not found");
+        }
+
+        return gridFsFile;
     }
 
 }

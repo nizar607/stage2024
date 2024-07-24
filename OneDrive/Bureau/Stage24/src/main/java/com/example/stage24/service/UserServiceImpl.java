@@ -103,8 +103,8 @@ public class UserServiceImpl implements IUserService {
                 ));
         }catch (Exception e){
             return new LoginResponse(
-                    "success",
-                    "",
+                    "failed",
+                    null,
                     null);
         }
     }
@@ -132,6 +132,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public User registerUser(SignupRequest signUpRequest) throws RuntimeException{
+
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return null;
         }
@@ -148,6 +149,7 @@ public class UserServiceImpl implements IUserService {
         log.info("not working");
 
             strRoles.forEach(role -> {
+                log.info("here working");
                 switch (role) {
                     case "ROLE_ADMIN":
                         log.info("admin here");
@@ -195,5 +197,10 @@ public class UserServiceImpl implements IUserService {
     @Override
     public List<User> getUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public User getUserById(String id) {
+        return userRepository.findById(id).orElse(null);
     }
 }
